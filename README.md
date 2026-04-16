@@ -212,7 +212,6 @@ TalkingHeadAI/
 ├── setup.sh                    # One-time setup script
 ├── run.sh                      # Daily run script
 ├── .env.example                # Environment template
-└── CLAUDE.md                   # AI assistant context
 ```
 
 ## Database Schema

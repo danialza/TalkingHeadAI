@@ -69,6 +69,43 @@ Deepgram STT --> Orchestrator --> Embed query (OpenAI)
                                  User sees + hears
 ```
 
+## System Diagrams
+
+<details>
+<summary>🏗️ Architecture Overview</summary>
+
+![Architecture Overview](assets/diagrams/architecture-overview.png)
+
+</details>
+
+<details>
+<summary>🔀 Request Flow: Voice to Avatar</summary>
+
+![Request Flow](assets/diagrams/request-flow.png)
+
+</details>
+
+<details>
+<summary>🎯 Two-Mode Query Routing</summary>
+
+![Two-Mode Routing](assets/diagrams/two-mode-routing.png)
+
+</details>
+
+<details>
+<summary>🧠 User Memory Flow</summary>
+
+![Memory Flow](assets/diagrams/memory-flow.png)
+
+</details>
+
+<details>
+<summary>🔄 Mentor Quality Loop</summary>
+
+![Mentor Quality Loop](assets/diagrams/mentor-quality-loop.png)
+
+</details>
+
 ### User Memory
 
 The system automatically extracts personal facts (name, job, experience level) from conversations using Claude, stores them in PostgreSQL, and injects them into future prompts for personalized responses.

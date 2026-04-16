@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Classic theme (existing light look) ───────────────────────────────────── */
+:root,
+[data-theme='classic'] {
+  --foreground-rgb: 15, 23, 42;
+  --background-start-rgb: 248, 250, 252;
+  --background-end-rgb: 241, 245, 249;
+}
+
+[data-theme='classic'] body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  min-height: 100vh;
+}
+
+/* ── Aurora theme (new — Primentoring dark + magenta→indigo gradient) ─────── */
+.theme-aurora-root {
+  --aurora-bg: #0a0a0a;
+  --aurora-bg2: #141422;
+  --aurora-fg: #ffffff;
+  --aurora-fg-dim: rgba(255, 255, 255, 0.7);
+  --aurora-fg-faint: rgba(255, 255, 255, 0.45);
+  --aurora-accent-from: #f070fd;
+  --aurora-accent-to: #4727e1;
+  --aurora-border: rgba(255, 255, 255, 0.12);
+  --aurora-card: rgba(255, 255, 255, 0.04);
+  --aurora-card-strong: rgba(255, 255, 255, 0.08);
+
+  color: var(--aurora-fg);
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(240, 112, 253, 0.28) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 15% 80%, rgba(71, 39, 225, 0.32) 0%, transparent 65%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(168, 85, 247, 0.18) 0%, transparent 70%),
+    linear-gradient(180deg, #0a0a0a 0%, #0e0a1a 60%, #0a0a0a 100%);
+}
+
+.theme-aurora-root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% -20%, rgba(240, 112, 253, 0.15), transparent 50%);
+  z-index: 0;
+}
+
+/* Glassmorphism card primitive used by Aurora layout */
+.aurora-card {
+  background: var(--aurora-card);
+  border: 1px solid var(--aurora-border);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-radius: 24px;
+}
+
+.aurora-card-strong {
+  background: var(--aurora-card-strong);
+  border: 1px solid var(--aurora-border);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-radius: 28px;
+}
+
+.aurora-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #f070fd 50%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.aurora-gradient-btn {
+  background: linear-gradient(135deg, #f070fd 0%, #4727e1 100%);
+  color: #ffffff;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 8px 24px rgba(240, 112, 253, 0.25),
+              0 4px 12px rgba(71, 39, 225, 0.2);
+}
+.aurora-gradient-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px rgba(240, 112, 253, 0.35),
+              0 6px 16px rgba(71, 39, 225, 0.3);
+}
+.aurora-gradient-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Floating soft-glow ring under big avatar */
+.aurora-avatar-glow {
+  position: absolute;
+  inset: -10%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(240, 112, 253, 0.35) 0%,
+    rgba(167, 139, 250, 0.18) 30%,
+    transparent 65%
+  );
+  filter: blur(40px);
+  z-index: 0;
+}
+
+@keyframes aurora-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.04); }
+}
+.aurora-avatar-glow.speaking {
+  animation: aurora-pulse 2.2s ease-in-out infinite;
+}
+
+/* Subtle floating particles overlay (decorative) */
+@keyframes aurora-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+.aurora-float { animation: aurora-float 6s ease-in-out infinite; }
+
+/* Pulsing ring for active recording (shared) */
+@keyframes ring-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.recording-ring {
+  animation: ring-pulse 1.5s ease-in-out infinite;
+}
+
+/* Avatar video transition */
+.avatar-container video {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* ── Persian / RTL ─────────────────────────────────────────────────────────
+   Applied to elements whose content starts with an Arabic/Persian letter
+   (detected at render time via `dir="auto"` or the `.is-rtl` helper class).
+   Uses Vazirmatn for Persian glyphs while keeping Inter as the base font
+   for everything else. */
+.font-vazir,
+[dir='rtl'],
+.is-rtl {
+  font-family: var(--font-vazir), var(--font-inter), system-ui, sans-serif;
+}
+
+/* `dir="auto"` lets the browser pick RTL/LTR from the first strong char,
+   so a single bubble/input can correctly flip per-message. */
+[dir='auto'] {
+  unicode-bidi: plaintext;
+}
+
+/* Smooth scroll for chat */
+.chat-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Aurora chat scrollbar */
+.theme-aurora-root .chat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.theme-aurora-root .chat-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+.theme-aurora-root .chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -1,0 +1,182 @@
+[
+  {
+    "question": "How do I prepare for a FAANG interview?",
+    "answer": "Focus on three areas: data structures and algorithms (practice daily for 2-3 months), system design (read Designing Data-Intensive Applications), and behavioral questions (prepare 8-10 STAR stories). Mock interviews are essential — find a partner or use platforms like Pramp.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "What is the best way to network in tech?",
+    "answer": "Start by being genuinely helpful. Contribute to open source, write blog posts, attend meetups. When reaching out, lead with what you can offer. LinkedIn messages should be personalized — mention something specific about their work. Follow up consistently but not aggressively.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to transition from engineering to management?",
+    "answer": "Start by leading projects informally. Volunteer for cross-team initiatives. Build people skills — learn to give feedback, run meetings, resolve conflicts. Read 'The Manager's Path' by Camille Fournier. Most importantly, make sure you genuinely enjoy helping others grow.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "Is a PhD worth it for a career in tech?",
+    "answer": "It depends on your goal. For research roles at top labs (Google Brain, FAIR), a PhD gives a significant advantage. For engineering and product roles, industry experience often matters more. A PhD teaches deep problem-solving but costs 4-6 years. Consider doing a masters first to test the waters.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How do I deal with imposter syndrome?",
+    "answer": "Almost everyone in tech experiences it, even senior engineers at top companies. Three strategies: keep a 'wins journal' to track accomplishments, remember that being hired means someone believes in you, and talk to peers — you'll find most feel the same way. Growth happens outside your comfort zone.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "Should I join a startup or a big company?",
+    "answer": "Early in your career, big companies offer structured learning, mentorship, and brand recognition. Startups offer breadth of experience and faster growth but with more risk. A good pattern: start at a big company for 2-3 years to build fundamentals, then join a startup if you want more ownership.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to negotiate a higher salary?",
+    "answer": "Always negotiate — companies expect it. Research market rates on levels.fyi and Glassdoor. Have competing offers if possible. Focus on your value, not your needs. Ask for the top of the range and be prepared to justify it with specific accomplishments. Never give the first number if you can avoid it.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "What skills are most important for a software engineer?",
+    "answer": "Beyond coding: communication (explaining technical concepts clearly), system thinking (understanding how pieces fit together), and learning ability (tech changes fast). On the technical side, focus on fundamentals — data structures, distributed systems, and at least one language deeply.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to build a strong resume for tech jobs?",
+    "answer": "Lead with impact, not responsibilities. Use the formula: 'Accomplished X by doing Y, resulting in Z.' Quantify everything — reduced latency by 40%, served 10M users. Keep it to one page. Tailor it to each job posting. Have someone in the industry review it.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How important is a computer science degree?",
+    "answer": "It helps but it's not required. Many successful engineers are self-taught or from bootcamps. What matters is demonstrable skill — projects, contributions, and ability to solve problems. A CS degree gives you fundamentals that are hard to learn on your own, like OS, compilers, and algorithms theory.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to succeed in the first 90 days of a new job?",
+    "answer": "Listen more than you talk. Understand the codebase and team dynamics. Ship something small in the first two weeks. Build relationships with your team and adjacent teams. Ask lots of questions — nobody expects you to know everything. Document what you learn for the next new hire.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "What is the best way to learn system design?",
+    "answer": "Start with 'Designing Data-Intensive Applications' by Martin Kleppmann. Then study real architectures — read engineering blogs from Netflix, Uber, and Airbnb. Practice by designing systems on a whiteboard. The key concepts are scalability, availability, consistency, and trade-offs between them.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to handle work-life balance in tech?",
+    "answer": "Set clear boundaries — define your working hours and stick to them. Learn to say no to meetings that don't need you. Take your vacation days. Exercise regularly. The best engineers are not the ones who work the most hours, but the ones who are most effective during their working hours.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to get promoted to senior engineer?",
+    "answer": "Three things matter: technical depth (own a critical system), impact scope (influence beyond your team), and mentorship (help junior engineers grow). Write design docs, lead projects end-to-end, and make your work visible. Talk to your manager about specific promotion criteria at your company.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "What advice do you have for immigrants in tech?",
+    "answer": "Your diverse background is a strength, not a weakness. Focus on building a strong professional network early. Understand visa implications for job changes. Improve English communication skills continuously. Many top tech leaders are immigrants — your journey is proof of resilience and adaptability.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to become a tech lead?",
+    "answer": "A tech lead is not just the best coder — they're the person who makes the whole team better. Start by mentoring others, driving technical decisions, and communicating with stakeholders. Learn to balance hands-on coding with coordination. Read 'Staff Engineer' by Will Larson.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How important is side projects and open source?",
+    "answer": "They demonstrate passion and initiative. For junior engineers, side projects are often the differentiator. For senior engineers, open source contributions build reputation. Choose projects you're genuinely interested in — forced contributions show. Quality matters more than quantity.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to deal with a difficult manager?",
+    "answer": "First, try direct communication — share specific concerns professionally. If that doesn't work, document issues and seek feedback from others. Consider finding an internal mentor or ally. If the situation is truly toxic, it's better to move teams or companies than to suffer. Your mental health comes first.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "What is the path to becoming a product manager?",
+    "answer": "Engineers transitioning to PM should start by getting closer to product decisions in their current role. Understand customers, write PRDs, and participate in roadmap planning. Build business acumen — learn about metrics, A/B testing, and user research. An MBA helps but is not required.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to stay current with technology trends?",
+    "answer": "Follow key people on Twitter/X and LinkedIn. Read Hacker News daily. Subscribe to newsletters like TLDR and The Morning Brew. Attend conferences (even virtually). Most importantly, build things with new technologies — reading about React is not the same as building with it.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to give a great technical presentation?",
+    "answer": "Start with the 'why' — why should the audience care? Use visuals, not walls of text. Practice out loud at least three times. Keep slides simple — one idea per slide. Tell a story, don't just present facts. End with a clear call to action or takeaway.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "What makes a good mentor-mentee relationship?",
+    "answer": "The mentee drives the relationship — come with specific questions and goals. Be honest about challenges. Follow up on advice given. A good mentor listens more than they talk, shares their failures not just successes, and respects your autonomy to make your own decisions.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to build confidence in technical interviews?",
+    "answer": "Practice is the only real answer. Do at least 100 LeetCode problems before interviewing. Do mock interviews with friends. Record yourself solving problems and watch it back. Remember: interviewers want you to succeed. Think out loud and show your problem-solving process.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "What is the role of AI and machine learning in career growth?",
+    "answer": "AI literacy is becoming essential for all tech roles, not just ML engineers. Understand the basics — what LLMs can and cannot do, how to prompt effectively, when to use AI tools. For ML careers specifically, strong math fundamentals (linear algebra, probability, optimization) are crucial.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to write better code?",
+    "answer": "Read 'Clean Code' by Robert Martin. Write code for humans, not machines. Use meaningful names, keep functions small, and write tests. Do code reviews actively — reviewing others' code teaches you patterns and anti-patterns. Refactor regularly. The best code is code you don't have to write.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to choose between multiple job offers?",
+    "answer": "Don't just compare salary. Consider: team quality (who you'll learn from), growth potential (trajectory not just title), company trajectory (growing or declining), work-life balance, and your learning goals. Visit the office, talk to future teammates. Trust your gut after gathering all data.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to start a career in data science?",
+    "answer": "Build a strong foundation in statistics and Python. Learn SQL deeply — it's used daily. Start with structured courses (Andrew Ng's ML course is great). Build portfolio projects with real datasets. Kaggle competitions help but real-world messy data experience matters more.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to recover from a career setback or layoff?",
+    "answer": "First, take a moment to process emotionally — it's normal to feel upset. Then, update your resume and LinkedIn immediately. Reach out to your network — most jobs come through connections. Use the time to learn something new. Many successful people's best career moves came after setbacks.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "How to build leadership skills as an engineer?",
+    "answer": "Leadership is not about authority — it's about influence. Start by taking ownership of problems nobody else wants to solve. Communicate clearly and frequently. Build trust by following through on commitments. Learn to give and receive feedback. Read 'Radical Candor' by Kim Scott.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  },
+  {
+    "question": "What is the best approach to remote work?",
+    "answer": "Over-communicate — in remote work, if you didn't write it down, it didn't happen. Set up a dedicated workspace. Maintain regular hours and routines. Be proactive in scheduling 1-on-1s with teammates. Use video for important conversations. Take breaks — remote burnout is real.",
+    "mentor_id": "iman",
+    "source": "podcast"
+  }
+]

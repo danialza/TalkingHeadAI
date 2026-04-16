@@ -1,0 +1,23 @@
+# Development overrides — hot reload for backend and frontend
+# Usage: docker compose -f docker-compose.yml -f docker-compose.override.yml --profile app up
+
+services:
+  backend:
+    build:
+      target: development
+    volumes:
+      - ./backend:/app
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    environment:
+      DEBUG: "true"
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    environment:
+      NODE_ENV: development

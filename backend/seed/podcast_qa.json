@@ -1,0 +1,152 @@
+[
+  {
+    "question": "How do I prepare for a FAANG software engineering interview?",
+    "answer": "Focus on LeetCode medium-level problems, especially arrays, trees, and dynamic programming. Practice explaining your thinking out loud. Mock interviews are crucial — do at least 20 before the real thing. System design rounds matter equally for senior roles, so study distributed systems fundamentals.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What is the best way to negotiate a job offer?",
+    "answer": "Always negotiate — companies expect it. Get competing offers if possible, as they're your strongest leverage. Be specific about your target number rather than giving a range. Say 'I'm very excited about this role, and based on my research and competing offers, I was hoping for X.' Never accept on the spot; ask for 48 hours.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I transition from a non-technical background into software engineering?",
+    "answer": "Start with Python or JavaScript through a structured bootcamp or self-study (freeCodeCamp, CS50). Build 3 real projects that solve actual problems you care about. Contribute to open source. Network actively — most jobs come through referrals. It typically takes 6-18 months of focused effort for your first role.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How should I handle imposter syndrome as a developer?",
+    "answer": "Imposter syndrome affects even senior engineers — it's extremely common. Keep a 'wins journal' documenting things you accomplish each week. Remind yourself that senior engineers Google things constantly too. Find a mentor or peer group to normalize the experience. The fact that you question yourself usually means you care about quality.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What skills should a backend developer focus on in 2024?",
+    "answer": "Core fundamentals first: databases (SQL and NoSQL), REST API design, authentication, and basic DevOps (Docker, CI/CD). Then cloud platforms (AWS or GCP). For AI-era backend, understanding LLM API integration and vector databases is increasingly valuable. Security awareness is non-negotiable.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I get my first open source contribution?",
+    "answer": "Search GitHub for 'good first issue' labels in projects you actually use. Start with documentation fixes or simple bug fixes — no contribution is too small. Read the contributing guide before anything. Comment on the issue before submitting a PR so maintainers know you're working on it. Patience is key; reviews can take weeks.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What is the difference between a senior engineer and a mid-level engineer?",
+    "answer": "Mid-level engineers execute tasks well with some guidance. Senior engineers independently define how to solve problems, anticipate edge cases, mentor others, and communicate technical tradeoffs to non-technical stakeholders. The biggest gap is usually ownership and communication, not just technical skill.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I build a portfolio as a self-taught developer?",
+    "answer": "Quality over quantity — three polished projects beat ten half-finished ones. Each project should solve a real problem, have clean code on GitHub, include a README explaining what it does and how to run it, and ideally be deployed and accessible online. Document your thinking, not just the code.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "Should I get a computer science degree or attend a bootcamp?",
+    "answer": "Both paths work. CS degrees give you deeper theoretical foundations and open doors at top companies that filter by pedigree. Bootcamps are faster and more practical, getting you job-ready in 3-6 months. Self-taught is also viable with discipline. The most important factor is what you build and how you can articulate your problem-solving process.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I improve my system design skills?",
+    "answer": "Read 'Designing Data-Intensive Applications' by Martin Kleppmann — it's the best resource. Study how real systems are built: read engineering blogs from Netflix, Uber, Airbnb. Practice drawing architecture diagrams for systems you use daily. Mock system design interviews with peers weekly. Focus on the 'why' behind every design decision.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What are the most important soft skills for a software engineer?",
+    "answer": "Communication is number one — being able to explain technical concepts clearly to different audiences. Next is proactive problem-solving: not just reporting problems but proposing solutions. Empathy for users and teammates matters enormously in collaborative environments. Finally, adaptability — the tech landscape changes fast.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I stay motivated when learning to code gets difficult?",
+    "answer": "Break goals into very small daily wins to maintain momentum. Build things you're genuinely interested in — passion projects sustain motivation better than tutorials. Find a learning community (Discord, meetups, study groups). Track your progress with a visible log. Remember that difficulty means you're growing, not failing.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What are good resources for learning algorithms and data structures?",
+    "answer": "Neetcode.io has excellent organized problem sets with video explanations. 'Introduction to Algorithms' (CLRS) is the definitive textbook. For interviews specifically, 'Cracking the Coding Interview' is still relevant. LeetCode Explore is well-structured. Don't just solve problems — understand and re-implement the patterns from scratch.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How important is networking for getting a job in tech?",
+    "answer": "Extremely important — studies consistently show 70-80% of jobs are filled through referrals or personal connections. Attend meetups, conferences, and hackathons. Engage on LinkedIn and Twitter/X. Reach out to people at companies you want to work at for informational interviews. Build relationships before you need them.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What should I put on my developer resume?",
+    "answer": "Lead with impact: quantify achievements where possible ('reduced API response time by 40%' beats 'improved performance'). List technologies you can actually discuss in depth, not everything you've touched. Include 2-3 strong projects with links. Keep it to one page unless you have 10+ years of experience. Tailor it for each application.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I handle a toxic work environment as a developer?",
+    "answer": "Document everything — keep records of problematic interactions. Speak to your manager first if the issue is with a peer; go to HR if it involves your manager. Set firm boundaries on work hours and communication. Actively interview elsewhere — having options dramatically reduces anxiety. Your mental health is worth more than any job.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What is the best programming language to learn first?",
+    "answer": "Python is the best first language for most people: clear syntax, massive ecosystem, applicable to web, data science, automation, and AI. JavaScript is the best choice if you know you want web development specifically. The language matters less than learning programming fundamentals deeply — picking either means you can learn the next one in weeks.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I become a better code reviewer?",
+    "answer": "Focus on the 'why' of changes, not just the 'what.' Distinguish blocking issues (bugs, security problems) from preferences (style). Ask questions rather than making demands: 'What was the thinking here?' instead of 'This is wrong.' Approve code that's good enough, not perfect. Review quickly — slow reviews block your teammates.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I deal with burnout as a software engineer?",
+    "answer": "Prevention is easier than cure: set hard stops on work hours, take full vacation days, and protect hobbies outside tech. If you're already burned out, take time off first — your brain needs physical recovery. Identify the root cause: too much work, misalignment with values, or lack of autonomy? Solutions differ for each. Talk to your manager honestly.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What is pair programming and when should I use it?",
+    "answer": "Pair programming is two developers working together on one computer: one types (driver) while the other reviews and guides (navigator), switching roles frequently. Use it for onboarding new team members, tackling complex or unfamiliar problems, debugging stubborn issues, and knowledge transfer. It's not efficient for routine tasks both parties understand well.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I learn Docker and why does it matter?",
+    "answer": "Docker matters because it solves 'works on my machine' problems and is foundational to modern cloud deployment. Start with the official Docker Getting Started tutorial. Learn four core concepts: images, containers, volumes, and networks. Practice Dockerizing your existing projects. Then learn Docker Compose for multi-service apps. Kubernetes comes after, not before.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I find a good mentor in tech?",
+    "answer": "Be specific about what you need help with — 'I want guidance on transitioning from frontend to backend roles' opens better conversations than 'I need a mentor.' Look in your workplace first. ADPList.org has free mentorship sessions with thousands of tech professionals. Give before you ask: follow your target mentor's work and engage meaningfully with it first.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What are the key principles of clean code?",
+    "answer": "Names should reveal intent — if you need a comment to explain a variable, rename it. Functions should do one thing and do it well. Avoid deep nesting; return early. Don't repeat yourself (DRY), but don't over-abstract prematurely. Write code for the next person to read, not just the machine to execute. Tests are part of clean code.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I break into the machine learning field as a software engineer?",
+    "answer": "You don't need a PhD for most ML engineering roles. Start with Andrew Ng's Machine Learning Specialization on Coursera for fundamentals. Learn Python ML libraries: scikit-learn, then PyTorch or TensorFlow. Build end-to-end projects including data collection, training, and deployment. MLOps (serving models in production) is currently where demand outstrips supply.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What is technical debt and how do we manage it?",
+    "answer": "Technical debt is the accumulated cost of shortcuts taken to ship faster. Like financial debt, small amounts are acceptable and sometimes strategic; large amounts compound and slow everything down. Manage it by making it visible — track it explicitly, not as a vague feeling. Dedicate a fixed percentage of each sprint to debt reduction. Never hide it from stakeholders.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I give effective technical presentations?",
+    "answer": "Know your audience first — a talk for engineers differs completely from one for executives. Lead with the outcome and why it matters, then explain how. Use concrete examples and demos over abstract explanations. Practice until you can deliver without notes. Prepare for the three hardest questions you might get. Record yourself at least once — it's uncomfortable but invaluable.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I set goals as a software engineer?",
+    "answer": "Use the SMART framework: Specific, Measurable, Achievable, Relevant, Time-bound. Separate skill goals (learn Kubernetes) from career goals (get promoted) from impact goals (reduce customer churn by X%). Review quarterly and adjust — the world changes. Share goals with your manager; goals you're accountable to others for are far more likely to happen.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What is the role of a tech lead?",
+    "answer": "A tech lead is responsible for the technical direction of a team or project while often still writing code. Key responsibilities: defining architecture, maintaining code quality standards, unblocking teammates, interfacing with product and stakeholders, and making technical decisions with incomplete information. It's more about enabling your team than being the best individual coder.",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "How do I improve my communication skills as an engineer?",
+    "answer": "Write a technical blog — explaining things in writing forces clarity. Practice the 'elevator pitch' version of any technical topic you're working on. In meetings, lead with the conclusion then provide supporting detail (pyramid principle). Ask for feedback specifically on communication, not just technical work. Read 'The Pyramid Principle' and 'Crucial Conversations.'",
+    "mentor_id": "jack"
+  },
+  {
+    "question": "What are the best practices for REST API design?",
+    "answer": "Use nouns not verbs for endpoints (/users not /getUsers). Use HTTP methods semantically (GET to read, POST to create, PUT/PATCH to update, DELETE to remove). Return appropriate status codes — 200 OK, 201 Created, 400 Bad Request, 404 Not Found, 500 Server Error. Version your API from day one (/v1/). Provide clear error messages with enough detail to debug.",
+    "mentor_id": "jack"
+  }
+]

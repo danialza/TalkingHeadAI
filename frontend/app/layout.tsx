@@ -17,7 +17,7 @@ const vazir = Vazirmatn({
 });
 
 export const metadata: Metadata = {
-  title: 'TalkingHeadAI — Primentoring',
+  title: 'TalkingHeadAI',
   description: 'Real-time conversational mentor powered by AI',
 };
 

@@ -35,6 +35,47 @@ export const api = {
       body: JSON.stringify(payload),
     }),
 
+  deleteQA: (id: number) =>
+    apiFetch<{ success: boolean }>(`/knowledge/${id}`, { method: 'DELETE' }),
+
+  // RAG / session_chunks management
+  listRagSources: () =>
+    apiFetch<{
+      total_chunks: number;
+      total_sources: number;
+      sources: Array<{
+        title: string;
+        filename: string | null;
+        source: string;
+        mentor_id: string;
+        chunk_count: number;
+        first_chunk_id: number;
+      }>;
+    }>('/mentor/rag/sources'),
+
+  listRagChunks: (title: string) =>
+    apiFetch<Array<{
+      id: number;
+      text: string;
+      title: string;
+      source: string;
+      mentor_id: string;
+      chunk_index: number;
+      filename: string | null;
+    }>>(`/mentor/rag/chunks?title=${encodeURIComponent(title)}`),
+
+  deleteRagSource: (title: string) =>
+    apiFetch<{ deleted: number; title: string }>(
+      `/mentor/rag/sources?title=${encodeURIComponent(title)}`,
+      { method: 'DELETE' },
+    ),
+
+  deleteRagChunk: (id: number) =>
+    apiFetch<{ deleted: number }>(`/mentor/rag/chunks/${id}`, { method: 'DELETE' }),
+
+  deleteAllRag: () =>
+    apiFetch<{ deleted_chunks: number }>(`/mentor/rag/all`, { method: 'DELETE' }),
+
   getUnanswered: () =>
     apiFetch<import('./types').UnansweredItem[]>('/mentor/unanswered'),
 
@@ -105,6 +146,34 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ source: 'session', ...payload }),
     }),
+
+  ingestTranscriptFile: async (
+    file: File,
+    opts: { mentor_id: string; source?: string; title?: string } = { mentor_id: 'default' },
+  ) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('mentor_id', opts.mentor_id);
+    fd.append('source', opts.source || 'session');
+    if (opts.title) fd.append('title', opts.title);
+    const res = await fetch(`${API_BASE}/mentor/transcript/upload`, {
+      method: 'POST',
+      headers: { 'X-API-Key': API_KEY },
+      body: fd,
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`HTTP ${res.status}: ${txt}`);
+    }
+    return res.json() as Promise<{
+      task_id: string;
+      status: string;
+      chunks: number;
+      chars: number;
+      title: string;
+      filename: string;
+    }>;
+  },
 
   health: () => apiFetch<{ status: string; providers: Record<string, string> }>('/health'),
 };

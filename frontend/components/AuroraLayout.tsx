@@ -108,7 +108,7 @@ function Header() {
         </div>
         <div>
           <h1 className="font-poppins text-xl font-semibold tracking-tight text-white">
-            Primentoring<span className="text-fuchsia-300">.AI</span>
+            TalkingHead<span className="text-fuchsia-300">.AI</span>
           </h1>
           <p className="text-[11px] text-white/50 font-medium uppercase tracking-wider">
             Talking Head Mentor
@@ -405,7 +405,7 @@ function Bubble({ msg }: { msg: ChatMessage }) {
         )}
       >
         {!isUser && msg.case && (
-          <div className="mb-1.5">
+          <div className="mb-1.5 flex items-center gap-1.5">
             <span
               className={clsx(
                 'text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider',
@@ -416,6 +416,14 @@ function Bubble({ msg }: { msg: ChatMessage }) {
             >
               {msg.case === 'B' ? '✓ Known' : '✦ New'}
             </span>
+            {msg.case === 'B' && typeof msg.ask_count === 'number' && msg.ask_count > 0 && (
+              <span
+                className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/10 text-white/70 border border-white/15"
+                title={`${msg.ask_count} ${msg.ask_count === 1 ? 'person has' : 'people have'} asked this`}
+              >
+                ×{msg.ask_count}
+              </span>
+            )}
           </div>
         )}
         <p className="whitespace-pre-wrap" dir="auto">{msg.text}</p>

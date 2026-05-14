@@ -1,0 +1,92 @@
+Lecture 7 — Bias, Variance, and Regularization
+CS 471: Introduction to Machine Learning
+Prof. M. Karimi · Spring 2026
+
+[00:00] Good morning. Today we will tie together the three concepts that you've
+been seeing in your homework: bias, variance, and the regularization techniques
+we use to balance them. By the end of this lecture you should be able to look
+at a learning curve and tell me, just by inspecting the gap between training
+and validation error, whether your model is suffering from high bias or high
+variance — and what to do about it.
+
+[02:30] Let's start with the definitions. The bias of an estimator is the
+expected difference between the prediction and the true value, averaged over
+many training sets drawn from the same distribution. A linear model trying to
+fit a curved relationship has high bias — no matter how many samples we throw
+at it, it cannot represent the true function. The variance, in contrast, is
+how much the prediction wiggles when we resample the training set. A deep tree
+that perfectly fits 500 training points will produce wildly different
+predictions if we shuffle the data and retrain.
+
+[06:15] The famous bias-variance decomposition tells us that the expected
+squared error of a model on a new point can be written as the sum of three
+terms: bias squared, variance, and the irreducible noise of the data itself.
+We cannot remove the noise — that's the floor. But we can trade bias against
+variance by changing model capacity. A simple model has high bias, low
+variance. A flexible model has low bias, high variance. The sweet spot lives
+in the middle, and finding it is mostly what we mean by "model selection."
+
+[12:00] How do we diagnose where we are on this curve? Plot training error and
+validation error against the number of training examples. If both errors are
+high and close together, you are bias-limited — your model is too simple.
+Adding data will not help; you need a richer model. If training error is low
+but validation error is much higher, you are variance-limited — your model is
+memorizing. More data, more regularization, or simpler models will help.
+
+[18:45] Now, regularization. The simplest form, called L2 or ridge
+regularization, adds a penalty proportional to the sum of squared weights to
+the loss function. It shrinks every weight toward zero, which reduces
+variance because the model becomes less sensitive to any one feature. The
+strength of the penalty is the hyperparameter lambda. Small lambda — almost
+no penalty, you get the unregularized solution. Large lambda — every weight
+collapses to zero and the model just predicts the mean. You tune lambda by
+cross-validation.
+
+[25:00] L1, or lasso, regularization adds a penalty proportional to the sum
+of absolute values of the weights. The geometry is different — the penalty
+surface has corners — and at those corners weights are pushed exactly to
+zero rather than just close to zero. This makes lasso a feature-selection
+tool. If you have a thousand candidate features and you suspect only twenty
+matter, lasso will tell you which twenty.
+
+[31:20] Elastic net is the convex combination of L1 and L2. You get the
+sparsity of lasso with the stability of ridge when features are correlated.
+In practice, for tabular data, elastic net is a strong default — start there
+before reaching for fancier methods.
+
+[35:00] Dropout, which we will study in detail next week, is a kind of
+regularization for neural networks. At training time, each forward pass
+randomly drops some fraction of the units. The network has to learn
+representations that don't depend on any single neuron. The dropout rate
+is your lambda — typical values are 0.1 to 0.5.
+
+[40:30] Early stopping is also regularization in disguise. As you train
+longer, training error keeps falling but validation error eventually rises —
+that's the signature of overfitting. If you stop at the validation minimum,
+you have implicitly chosen a model with bounded effective capacity. Almost
+every modern training pipeline uses early stopping with a patience parameter.
+
+[46:00] Data augmentation — flipping, cropping, color-jittering images,
+synonym-replacement on text — also reduces variance. You're effectively
+making your training set look bigger without actually collecting new data,
+which is the cheapest variance reduction available.
+
+[51:30] Practical recipe for the homework. Start simple. Train a baseline.
+Plot the learning curves. Read the gap between training and validation. If
+the gap is small but error is high, increase capacity — deeper net, more
+features, polynomial expansion. If the gap is large, regularize harder, get
+more data, or simplify. Iterate.
+
+[56:00] One last thing. None of this is theoretical decoration. Every model
+you ship in industry — a fraud detector, a recommender, a medical risk
+score — sits somewhere on the bias-variance curve, and the difference
+between a model that works in production and one that doesn't is usually
+measured in how well its designers found that sweet spot.
+
+[58:30] Office hours are Monday and Thursday 2-4pm in Eng 314. Bring your
+learning curves. Read sections 7.1 to 7.3 of Hastie, Tibshirani, and Friedman
+for next week. Assignment 3 is due Friday May 16th at 11:59pm via the course
+portal — start early, the cross-validation loop takes overnight to run on
+the bigger dataset. See you Wednesday.
+
+[End of recording]

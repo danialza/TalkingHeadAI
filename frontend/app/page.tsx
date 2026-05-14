@@ -239,6 +239,7 @@ export default function ConversationPage() {
           role: 'assistant',
           text: msg.data || '',
           case: msg.case,
+          ask_count: msg.ask_count,
           timestamp: new Date(),
         },
       ]);

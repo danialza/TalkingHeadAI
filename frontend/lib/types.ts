@@ -41,6 +41,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
   case?: CaseType;
+  ask_count?: number | null;
   timestamp: Date;
 }
 

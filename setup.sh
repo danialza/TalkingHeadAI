@@ -109,7 +109,7 @@ UVICORN_PID=$!
 sleep 5
 
 # Check tables created
-TABLE_COUNT=$(docker exec primentoring-postgres-1 psql -U "${POSTGRES_USER:-thuser}" -d "${POSTGRES_DB:-talkinghead}" -t -c "SELECT count(*) FROM information_schema.tables WHERE table_schema='public';" 2>/dev/null | tr -d ' ' || echo "0")
+TABLE_COUNT=$(docker exec talkinghead-postgres-1 psql -U "${POSTGRES_USER:-thuser}" -d "${POSTGRES_DB:-talkinghead}" -t -c "SELECT count(*) FROM information_schema.tables WHERE table_schema='public';" 2>/dev/null | tr -d ' ' || echo "0")
 echo "  ✅ ${TABLE_COUNT} tables created in Postgres"
 
 kill $UVICORN_PID 2>/dev/null || true

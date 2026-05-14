@@ -28,6 +28,11 @@ deepgram-sdk==3.3.0
 # ── AI — Vector DB ────────────────────────────────────────
 qdrant-client==1.9.1
 
+# ── Document parsers (transcript upload) ──────────────────
+pypdf==6.10.2
+python-docx==1.2.0
+python-pptx==1.0.2
+
 # ── Config / Utils ────────────────────────────────────────
 pydantic-settings==2.2.1
 python-dotenv==1.0.1

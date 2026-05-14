@@ -1,0 +1,35 @@
+# Test questions to ask the avatar during the demo
+# Mix of "approved KB hit" (Case B) and "RAG generated" (Case A)
+# Use the ones marked ★ in your video — they show off the system best.
+
+## Case B — should hit approved KB (instant, deterministic)
+★ When is Assignment 3 due?
+★ What are your office hours?
+  How is the course graded?
+  Can I use ChatGPT for assignments?
+  What is the policy on late submissions?
+  How are final project teams formed?
+
+## Case A — should pull from lecture transcript (RAG generated)
+★ Can you explain the bias-variance tradeoff?
+★ When should I use L1 versus L2 regularization?
+  What is dropout and why does it work?
+  How do I know if my model is overfitting?
+  What does early stopping actually do?
+  Why is data augmentation a form of regularization?
+
+## Case A — pulls from syllabus (administrative)
+  What books are required for this course?
+  Where do I find the recorded lectures?
+  Who are the TAs?
+  What's the prerequisite course for CS 471?
+
+## Edge — system should say "I don't know"
+  What did Prof. Karimi have for breakfast today?
+  What's my final grade going to be?
+
+## Memory test — second turn references first
+  Turn 1: "My name is Sara."
+  Turn 2: "What's my name?"
+  Turn 3: "I'm worried about Assignment 3 — when's it due?"
+   → should call you Sara AND give the deadline

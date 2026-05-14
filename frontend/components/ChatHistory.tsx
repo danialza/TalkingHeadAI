@@ -34,7 +34,7 @@ export default function ChatHistory({ messages }: { messages: ChatMessage[] }) {
             )}
           >
             {msg.role === 'assistant' && msg.case && (
-              <div className="mb-1">
+              <div className="mb-1 flex items-center gap-1.5">
                 <span
                   className={clsx(
                     'text-xs font-semibold px-2 py-0.5 rounded-full',
@@ -45,6 +45,14 @@ export default function ChatHistory({ messages }: { messages: ChatMessage[] }) {
                 >
                   {msg.case === 'B' ? '✓ Known Answer' : '✦ New Question'}
                 </span>
+                {msg.case === 'B' && typeof msg.ask_count === 'number' && msg.ask_count > 0 && (
+                  <span
+                    className="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600"
+                    title={`${msg.ask_count} ${msg.ask_count === 1 ? 'person has' : 'people have'} asked this`}
+                  >
+                    ×{msg.ask_count}
+                  </span>
+                )}
               </div>
             )}
             <p dir="auto">{msg.text}</p>

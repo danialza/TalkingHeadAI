@@ -163,6 +163,7 @@ class ConversationOrchestrator:
             "data": response_text,
             "case": decision.case,
             "confidence": decision.confidence,
+            "ask_count": ask_count,
         }
 
         # TTS: synthesize complete audio (no streaming — we want one clean file)
@@ -238,9 +239,9 @@ class ConversationOrchestrator:
             await db.commit()
             await db.refresh(qa)
             count = qa.ask_count
-            # Display text includes count context; TTS reads only the answer naturally
-            display_text = f"{count} {'person has' if count == 1 else 'people have'} asked this question. {qa.answer}"
-            tts_text = qa.answer  # clean, no robotic prefix
+            # Both display and TTS use clean answer; ask_count returned separately for UI badge
+            display_text = qa.answer
+            tts_text = qa.answer
             return display_text, tts_text, count
 
     async def _handle_case_a(

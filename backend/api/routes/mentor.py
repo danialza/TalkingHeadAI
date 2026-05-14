@@ -1,9 +1,10 @@
 """Mentor dashboard endpoints — review unanswered questions."""
+import io
 import math
 from typing import Dict, List, Tuple
 
 import structlog
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from sqlalchemy import select, desc, func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -534,3 +535,266 @@ async def ingest_transcript(
 
     log.info("transcript_done", chunks=len(chunks))
     return {"task_id": f"inproc-{mentor_id}", "status": "done", "mode": "inproc", "chunks": len(chunks)}
+
+
+# ── File-based transcript upload ──────────────────────────────────────────
+SUPPORTED_EXTS = {".txt", ".md", ".pdf", ".docx", ".pptx"}
+MAX_UPLOAD_BYTES = 25 * 1024 * 1024  # 25 MB
+
+
+def _extract_text_from_file(filename: str, data: bytes) -> str:
+    """Extract plain text from txt / md / pdf / docx / pptx bytes."""
+    ext = "." + filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+    if ext not in SUPPORTED_EXTS:
+        raise HTTPException(
+            status_code=415,
+            detail=f"Unsupported file type {ext!r}. Supported: {sorted(SUPPORTED_EXTS)}",
+        )
+
+    if ext in (".txt", ".md"):
+        for enc in ("utf-8", "utf-16", "latin-1"):
+            try:
+                return data.decode(enc)
+            except UnicodeDecodeError:
+                continue
+        raise HTTPException(status_code=400, detail="Could not decode text file")
+
+    if ext == ".pdf":
+        try:
+            from pypdf import PdfReader
+        except ImportError:
+            raise HTTPException(status_code=500, detail="pypdf not installed")
+        reader = PdfReader(io.BytesIO(data))
+        return "\n\n".join((p.extract_text() or "") for p in reader.pages).strip()
+
+    if ext == ".docx":
+        try:
+            from docx import Document
+        except ImportError:
+            raise HTTPException(status_code=500, detail="python-docx not installed")
+        doc = Document(io.BytesIO(data))
+        parts = [p.text for p in doc.paragraphs if p.text.strip()]
+        for table in doc.tables:
+            for row in table.rows:
+                cells = [c.text.strip() for c in row.cells if c.text.strip()]
+                if cells:
+                    parts.append(" | ".join(cells))
+        return "\n".join(parts).strip()
+
+    if ext == ".pptx":
+        try:
+            from pptx import Presentation
+        except ImportError:
+            raise HTTPException(status_code=500, detail="python-pptx not installed")
+        prs = Presentation(io.BytesIO(data))
+        slides = []
+        for i, slide in enumerate(prs.slides, 1):
+            slide_lines = [f"[Slide {i}]"]
+            for shape in slide.shapes:
+                if shape.has_text_frame:
+                    for para in shape.text_frame.paragraphs:
+                        text = "".join(r.text for r in para.runs).strip()
+                        if text:
+                            slide_lines.append(text)
+                if getattr(shape, "has_table", False):
+                    for row in shape.table.rows:
+                        cells = [c.text.strip() for c in row.cells if c.text.strip()]
+                        if cells:
+                            slide_lines.append(" | ".join(cells))
+            # Speaker notes
+            if slide.has_notes_slide:
+                notes = slide.notes_slide.notes_text_frame.text.strip()
+                if notes:
+                    slide_lines.append(f"(notes) {notes}")
+            slides.append("\n".join(slide_lines))
+        return "\n\n".join(slides).strip()
+
+    raise HTTPException(status_code=415, detail=f"Unsupported file type {ext!r}")
+
+
+@router.post("/transcript/upload", status_code=status.HTTP_202_ACCEPTED)
+async def ingest_transcript_file(
+    file: UploadFile = File(...),
+    mentor_id: str = Form("default"),
+    source: str = Form("session"),
+    title: str = Form(""),
+    _: str = Depends(require_api_key),
+):
+    """Upload txt / md / pdf / docx / pptx → extract → chunk + embed."""
+    import hashlib
+    from datetime import datetime
+
+    raw = await file.read()
+    if not raw:
+        raise HTTPException(status_code=400, detail="empty file")
+    if len(raw) > MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File too large ({len(raw)} bytes > {MAX_UPLOAD_BYTES})",
+        )
+
+    text = _extract_text_from_file(file.filename or "upload.txt", raw).strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="No extractable text found in file")
+
+    title = (title or "").strip() or f"{file.filename} · {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}"
+
+    log.info(
+        "transcript_upload_extracted",
+        filename=file.filename,
+        bytes=len(raw),
+        chars=len(text),
+        mentor_id=mentor_id,
+    )
+
+    import app_state as _app_state
+    embedding_svc = _app_state.state.get("embedding")
+    vector_store = _app_state.state.get("vector_store")
+    if embedding_svc is None or vector_store is None:
+        raise HTTPException(status_code=503, detail="embedding/vector_store not initialized")
+
+    chunks = _chunk_text_inline(text)
+    for i, chunk in enumerate(chunks):
+        vector = await embedding_svc.embed(chunk)
+        chunk_id = int(hashlib.md5(chunk.encode()).hexdigest()[:16], 16) % (2**63)
+        await vector_store.upsert(
+            collection="session_chunks",
+            vector_id=chunk_id,
+            vector=vector,
+            payload={
+                "text": chunk,
+                "mentor_id": mentor_id,
+                "source": source,
+                "transcript_title": title,
+                "chunk_index": i,
+                "filename": file.filename,
+            },
+        )
+
+    log.info("transcript_upload_done", filename=file.filename, chunks=len(chunks))
+    return {
+        "task_id": f"inproc-{mentor_id}",
+        "status": "done",
+        "mode": "inproc",
+        "chunks": len(chunks),
+        "chars": len(text),
+        "title": title,
+        "filename": file.filename,
+    }
+
+
+# ── RAG inspection / management ────────────────────────────────────────────
+@router.get("/rag/sources")
+async def list_rag_sources(_: str = Depends(require_api_key)):
+    """List every distinct (transcript_title, source, mentor_id, filename)
+    indexed in session_chunks, with a chunk count per source."""
+    import app_state as _app_state
+    vector_store = _app_state.state.get("vector_store")
+    if vector_store is None:
+        raise HTTPException(status_code=503, detail="vector_store not initialized")
+
+    points = await vector_store.scroll_all("session_chunks", limit=10_000)
+    groups: Dict[Tuple[str, str, str, str], Dict] = {}
+    for p in points:
+        pl = p["payload"]
+        key = (
+            pl.get("transcript_title") or "(untitled)",
+            pl.get("source") or "session",
+            pl.get("mentor_id") or "default",
+            pl.get("filename") or "",
+        )
+        g = groups.setdefault(key, {
+            "title": key[0],
+            "source": key[1],
+            "mentor_id": key[2],
+            "filename": key[3] or None,
+            "chunk_count": 0,
+            "first_chunk_id": p["id"],
+        })
+        g["chunk_count"] += 1
+
+    sources = sorted(groups.values(), key=lambda g: -g["chunk_count"])
+    return {
+        "total_chunks": len(points),
+        "total_sources": len(sources),
+        "sources": sources,
+    }
+
+
+@router.get("/rag/chunks")
+async def list_rag_chunks(
+    title: str,
+    _: str = Depends(require_api_key),
+):
+    """List every chunk for one transcript title (sorted by chunk_index)."""
+    import app_state as _app_state
+    vector_store = _app_state.state.get("vector_store")
+    if vector_store is None:
+        raise HTTPException(status_code=503, detail="vector_store not initialized")
+
+    points = await vector_store.scroll_all(
+        "session_chunks",
+        filter_payload={"transcript_title": title},
+        limit=5_000,
+    )
+    chunks = [
+        {
+            "id": p["id"],
+            "text": p["payload"].get("text", ""),
+            "title": p["payload"].get("transcript_title", ""),
+            "source": p["payload"].get("source", ""),
+            "mentor_id": p["payload"].get("mentor_id", ""),
+            "chunk_index": p["payload"].get("chunk_index", 0),
+            "filename": p["payload"].get("filename"),
+        }
+        for p in points
+    ]
+    chunks.sort(key=lambda c: c["chunk_index"])
+    return chunks
+
+
+@router.delete("/rag/sources")
+async def delete_rag_source(
+    title: str,
+    _: str = Depends(require_api_key),
+):
+    """Remove every chunk for one transcript title."""
+    import app_state as _app_state
+    vector_store = _app_state.state.get("vector_store")
+    if vector_store is None:
+        raise HTTPException(status_code=503, detail="vector_store not initialized")
+
+    deleted = await vector_store.delete_by_filter(
+        "session_chunks", {"transcript_title": title}
+    )
+    log.info("rag_source_deleted", title=title, deleted=deleted)
+    return {"deleted": deleted, "title": title}
+
+
+@router.delete("/rag/chunks/{chunk_id}")
+async def delete_rag_chunk(
+    chunk_id: int,
+    _: str = Depends(require_api_key),
+):
+    """Remove a single chunk by Qdrant point id."""
+    import app_state as _app_state
+    vector_store = _app_state.state.get("vector_store")
+    if vector_store is None:
+        raise HTTPException(status_code=503, detail="vector_store not initialized")
+
+    await vector_store.delete("session_chunks", chunk_id)
+    log.info("rag_chunk_deleted", id=chunk_id)
+    return {"deleted": 1}
+
+
+@router.delete("/rag/all")
+async def delete_all_rag(_: str = Depends(require_api_key)):
+    """Wipe the entire session_chunks collection (irreversible)."""
+    import app_state as _app_state
+    vector_store = _app_state.state.get("vector_store")
+    if vector_store is None:
+        raise HTTPException(status_code=503, detail="vector_store not initialized")
+
+    deleted = await vector_store.delete_all("session_chunks")
+    log.info("rag_all_deleted", deleted=deleted)
+    return {"deleted_chunks": deleted}

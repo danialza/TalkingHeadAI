@@ -78,7 +78,7 @@ export default function Avatar({ streamVideoRef, streamState, status, className,
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={poster}
-        alt="Primentoring AI presenter"
+        alt="AI presenter"
         className={clsx(
           'absolute inset-0 w-full h-full object-cover transition-all duration-700',
           showLiveVideo ? 'opacity-0' : 'opacity-100',
@@ -124,7 +124,7 @@ export default function Avatar({ streamVideoRef, streamState, status, className,
       >
         <VoiceBars active={isSpeaking} />
         <p className={clsx('text-xs font-medium tracking-wide drop-shadow', isSpeaking ? 'text-blue-200' : isThinking ? 'text-yellow-200' : isConnecting ? 'text-blue-200/80' : 'text-blue-100/80')}>
-          {isConnecting ? 'Connecting avatar...' : isThinking ? 'Thinking...' : isSpeaking ? 'Speaking' : 'Primentoring AI'}
+          {isConnecting ? 'Connecting avatar...' : isThinking ? 'Thinking...' : isSpeaking ? 'Speaking' : 'TalkingHead AI'}
         </p>
       </div>
 

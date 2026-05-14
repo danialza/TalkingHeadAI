@@ -12,9 +12,10 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 const STORAGE_KEY = 'th-theme';
+const DEFAULT_THEME: ThemeName = 'aurora';
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeName>('classic');
+  const [theme, setThemeState] = useState<ThemeName>(DEFAULT_THEME);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -47,8 +48,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
-      {/* suppress hydration mismatch — server renders default 'classic', client may swap */}
-      <div data-theme-root={hydrated ? theme : 'classic'} suppressHydrationWarning>
+      {/* suppress hydration mismatch — server renders default theme, client may swap */}
+      <div data-theme-root={hydrated ? theme : DEFAULT_THEME} suppressHydrationWarning>
         {children}
       </div>
     </ThemeContext.Provider>
@@ -60,7 +61,7 @@ export function useTheme(): ThemeContextValue {
   if (!ctx) {
     // Safe fallback for components rendered outside provider (e.g. mentor dashboard).
     return {
-      theme: 'classic',
+      theme: DEFAULT_THEME,
       setTheme: () => {},
       toggleTheme: () => {},
     };

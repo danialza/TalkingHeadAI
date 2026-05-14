@@ -25,11 +25,14 @@ import {
   X as XIcon,
   ArrowUpDown,
   Search,
+  Trash2,
+  Layers,
+  AlertTriangle,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { QAPair, UnansweredGroup } from '@/lib/types';
 
-type TabKey = 'unanswered' | 'kb' | 'add_qa' | 'transcript' | 'test' | 'threshold';
+type TabKey = 'unanswered' | 'kb' | 'add_qa' | 'transcript' | 'rag' | 'test' | 'threshold';
 type UnansweredSort = 'count' | 'newest' | 'sim';
 type KbSort = 'count' | 'newest';
 
@@ -112,7 +115,7 @@ export default function MentorDashboard() {
   const [editKbSaving, setEditKbSaving] = useState<boolean>(false);
   const [editKbError, setEditKbError] = useState<string>('');
 
-  const mentorId = 'jack';
+  const mentorId = 'noor';
 
   // Add-QA form state
   const [newQ, setNewQ] = useState('');
@@ -127,6 +130,34 @@ export default function MentorDashboard() {
   const [transcriptStatus, setTranscriptStatus] = useState<'idle' | 'queuing' | 'ok' | 'err'>('idle');
   const [transcriptTaskId, setTranscriptTaskId] = useState<string>('');
   const [transcriptError, setTranscriptError] = useState<string>('');
+  const [transcriptFileStatus, setTranscriptFileStatus] = useState<'idle' | 'uploading' | 'ok' | 'err'>('idle');
+  const [transcriptFileInfo, setTranscriptFileInfo] = useState<string>('');
+
+  // RAG index browser state
+  type RagSource = {
+    title: string;
+    filename: string | null;
+    source: string;
+    mentor_id: string;
+    chunk_count: number;
+    first_chunk_id: number;
+  };
+  type RagChunk = {
+    id: number;
+    text: string;
+    title: string;
+    source: string;
+    mentor_id: string;
+    chunk_index: number;
+    filename: string | null;
+  };
+  const [ragSources, setRagSources] = useState<RagSource[]>([]);
+  const [ragTotalChunks, setRagTotalChunks] = useState(0);
+  const [ragLoading, setRagLoading] = useState(false);
+  const [ragError, setRagError] = useState('');
+  const [ragExpandedTitle, setRagExpandedTitle] = useState<string | null>(null);
+  const [ragChunks, setRagChunks] = useState<RagChunk[]>([]);
+  const [ragChunksLoading, setRagChunksLoading] = useState(false);
 
   // Threshold recommendation state
   const [threshold, setThreshold] = useState<import('@/lib/types').ThresholdRecommendation | null>(null);
@@ -254,6 +285,133 @@ export default function MentorDashboard() {
     }
   };
 
+  const handleDeleteKb = async (qa: QAPair) => {
+    const ok = window.confirm(
+      `Delete this Q&A permanently?\n\nQ: ${qa.question}\n\nThis removes it from PostgreSQL and Qdrant. Cannot be undone.`,
+    );
+    if (!ok) return;
+    try {
+      await api.deleteQA(qa.id);
+      setKnowledgeBase((prev) => prev.filter((x) => x.id !== qa.id));
+    } catch (err) {
+      window.alert(`Delete failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  };
+
+  const loadRagSources = useCallback(async () => {
+    setRagLoading(true);
+    setRagError('');
+    try {
+      const res = await api.listRagSources();
+      setRagSources(res.sources);
+      setRagTotalChunks(res.total_chunks);
+    } catch (e) {
+      setRagError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setRagLoading(false);
+    }
+  }, []);
+
+  const loadRagChunks = useCallback(async (title: string) => {
+    setRagChunksLoading(true);
+    setRagChunks([]);
+    try {
+      const chunks = await api.listRagChunks(title);
+      setRagChunks(chunks);
+    } catch (e) {
+      window.alert(`Load chunks failed: ${e instanceof Error ? e.message : String(e)}`);
+    } finally {
+      setRagChunksLoading(false);
+    }
+  }, []);
+
+  const toggleRagSource = (title: string) => {
+    if (ragExpandedTitle === title) {
+      setRagExpandedTitle(null);
+      setRagChunks([]);
+    } else {
+      setRagExpandedTitle(title);
+      loadRagChunks(title);
+    }
+  };
+
+  const deleteRagSource = async (title: string) => {
+    const ok = window.confirm(
+      `Remove all chunks for "${title}" from the RAG index?\n\nThis affects Case A retrieval immediately. Cannot be undone.`,
+    );
+    if (!ok) return;
+    try {
+      const res = await api.deleteRagSource(title);
+      window.alert(`Removed ${res.deleted} chunks for "${title}".`);
+      if (ragExpandedTitle === title) {
+        setRagExpandedTitle(null);
+        setRagChunks([]);
+      }
+      loadRagSources();
+    } catch (e) {
+      window.alert(`Delete failed: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
+  const deleteRagChunk = async (chunkId: number) => {
+    const ok = window.confirm('Delete this single chunk from the RAG index?');
+    if (!ok) return;
+    try {
+      await api.deleteRagChunk(chunkId);
+      setRagChunks((prev) => prev.filter((c) => c.id !== chunkId));
+      loadRagSources();
+    } catch (e) {
+      window.alert(`Delete failed: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
+  const wipeAllRag = async () => {
+    const phrase = window.prompt(
+      `⚠️  This will delete ALL session_chunks (every transcript, every uploaded file).\n\nType DELETE to confirm:`,
+    );
+    if (phrase !== 'DELETE') return;
+    try {
+      const res = await api.deleteAllRag();
+      window.alert(`Wiped. Removed ${res.deleted_chunks} chunks.`);
+      setRagSources([]);
+      setRagTotalChunks(0);
+      setRagChunks([]);
+      setRagExpandedTitle(null);
+    } catch (e) {
+      window.alert(`Wipe failed: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
+  const handleTranscriptFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // allow re-selecting same file
+    if (!file) return;
+    const ext = '.' + (file.name.split('.').pop() || '').toLowerCase();
+    const allowed = ['.txt', '.md', '.pdf', '.docx', '.pptx'];
+    if (!allowed.includes(ext)) {
+      setTranscriptFileStatus('err');
+      setTranscriptFileInfo(`Unsupported file type ${ext}. Allowed: ${allowed.join(', ')}`);
+      return;
+    }
+    setTranscriptFileStatus('uploading');
+    setTranscriptFileInfo(`Uploading ${file.name} (${(file.size / 1024).toFixed(1)} KB)…`);
+    try {
+      const res = await api.ingestTranscriptFile(file, {
+        mentor_id: mentorId,
+        source: transcriptSource,
+        title: transcriptTitle.trim() || undefined,
+      });
+      setTranscriptFileStatus('ok');
+      setTranscriptFileInfo(
+        `✓ ${res.filename} → ${res.chunks} chunks, ${res.chars.toLocaleString()} chars (title: "${res.title}")`,
+      );
+      setTimeout(() => setTranscriptFileStatus('idle'), 6000);
+    } catch (err) {
+      setTranscriptFileStatus('err');
+      setTranscriptFileInfo(err instanceof Error ? err.message : String(err));
+    }
+  };
+
   const loadThreshold = useCallback(async () => {
     setThresholdLoading(true);
     setThresholdError('');
@@ -266,6 +424,14 @@ export default function MentorDashboard() {
       setThresholdLoading(false);
     }
   }, [mentorId]);
+
+  // Auto-load RAG sources at mount (for tab badge) and on switching to RAG tab
+  useEffect(() => {
+    loadRagSources();
+  }, [loadRagSources]);
+  useEffect(() => {
+    if (activeTab === 'rag') loadRagSources();
+  }, [activeTab, loadRagSources]);
 
   const runTestQuery = async (question: string) => {
     const id = uuidv4();
@@ -381,6 +547,7 @@ export default function MentorDashboard() {
     { key: 'kb', label: `Knowledge Base (${knowledgeBase.length})`, icon: BookOpen },
     { key: 'add_qa', label: 'Add Q&A', icon: Plus },
     { key: 'transcript', label: 'Transcripts', icon: FileText },
+    { key: 'rag', label: `RAG Index${ragTotalChunks ? ` (${ragTotalChunks})` : ''}`, icon: Layers },
     { key: 'test', label: 'Quick Test', icon: Zap },
     { key: 'threshold', label: 'Threshold Tuning', icon: Sliders },
   ];
@@ -812,14 +979,24 @@ export default function MentorDashboard() {
                     <span className="text-xs text-gray-400">{qa.ask_count} asks</span>
                     <span className="text-xs text-gray-400">{qa.source}</span>
                     {!isEditing && (
-                      <button
-                        onClick={() => startEditKb(qa)}
-                        className="mt-1 flex items-center gap-1 text-[11px] px-2 py-1 rounded-md text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                        title="Edit answer (re-indexes Qdrant)"
-                      >
-                        <Edit3 className="w-3 h-3" />
-                        edit
-                      </button>
+                      <div className="mt-1 flex items-center gap-1">
+                        <button
+                          onClick={() => startEditKb(qa)}
+                          className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-md text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          title="Edit answer (re-indexes Qdrant)"
+                        >
+                          <Edit3 className="w-3 h-3" />
+                          edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteKb(qa)}
+                          className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-md text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          title="Delete Q&A from PostgreSQL + Qdrant"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                          delete
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -917,8 +1094,61 @@ export default function MentorDashboard() {
             </div>
           </div>
 
+          {/* File upload — txt / md / pdf / docx / pptx */}
+          <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-gray-800">Upload a file</p>
+                <p className="text-xs text-gray-500">
+                  Supported: <code className="text-[11px] bg-white border border-gray-200 px-1 rounded">.txt</code>{' '}
+                  <code className="text-[11px] bg-white border border-gray-200 px-1 rounded">.md</code>{' '}
+                  <code className="text-[11px] bg-white border border-gray-200 px-1 rounded">.pdf</code>{' '}
+                  <code className="text-[11px] bg-white border border-gray-200 px-1 rounded">.docx</code>{' '}
+                  <code className="text-[11px] bg-white border border-gray-200 px-1 rounded">.pptx</code>
+                  &nbsp;· max 25 MB · text extracted, chunked, embedded directly.
+                </p>
+              </div>
+              <label
+                className={`shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium cursor-pointer transition-colors ${
+                  transcriptFileStatus === 'uploading'
+                    ? 'bg-gray-300 text-gray-700 cursor-wait'
+                    : 'bg-white border border-gray-300 hover:bg-gray-100 text-gray-800'
+                }`}
+              >
+                {transcriptFileStatus === 'uploading' ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <FileText className="w-4 h-4" />
+                )}
+                {transcriptFileStatus === 'uploading' ? 'Uploading…' : 'Choose file'}
+                <input
+                  type="file"
+                  accept=".txt,.md,.pdf,.docx,.pptx,text/plain,text/markdown,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+                  className="hidden"
+                  onChange={handleTranscriptFileUpload}
+                  disabled={transcriptFileStatus === 'uploading'}
+                />
+              </label>
+            </div>
+            {transcriptFileInfo && (
+              <p
+                className={`mt-2 text-xs ${
+                  transcriptFileStatus === 'err'
+                    ? 'text-red-600'
+                    : transcriptFileStatus === 'ok'
+                    ? 'text-green-600'
+                    : 'text-gray-500'
+                }`}
+              >
+                {transcriptFileInfo}
+              </p>
+            )}
+          </div>
+
           <div>
-            <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">Transcript</label>
+            <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+              Or paste transcript
+            </label>
             <textarea
               value={transcriptText}
               onChange={(e) => setTranscriptText(e.target.value)}
@@ -929,10 +1159,15 @@ export default function MentorDashboard() {
             <p className="text-xs text-gray-400 mt-1">{transcriptText.length.toLocaleString()} characters</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <button
               onClick={handleTranscriptUpload}
               disabled={!transcriptText.trim() || transcriptStatus === 'queuing'}
+              title={
+                !transcriptText.trim()
+                  ? 'Paste transcript text above to enable. File uploads are processed automatically — no need to click this.'
+                  : 'Submit pasted text for chunking + embedding'
+              }
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {transcriptStatus === 'queuing' ? (
@@ -940,8 +1175,11 @@ export default function MentorDashboard() {
               ) : (
                 <Send className="w-4 h-4" />
               )}
-              Queue for Vectorization
+              Submit pasted text
             </button>
+            <span className="text-xs text-gray-400">
+              For files use the upload box above — they auto-process, no button needed.
+            </span>
             {transcriptStatus === 'ok' && (
               <span className="text-sm text-green-600">
                 ✓ Queued (task: <code className="text-xs">{transcriptTaskId.slice(0, 8)}</code>)
@@ -949,6 +1187,135 @@ export default function MentorDashboard() {
             )}
             {transcriptStatus === 'err' && <span className="text-sm text-red-600">Error: {transcriptError}</span>}
           </div>
+        </div>
+      )}
+
+      {/* RAG Index — list & delete everything indexed in session_chunks */}
+      {activeTab === 'rag' && (
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-3">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <Layers className="w-5 h-5 text-indigo-600" />
+                  RAG Index — <code className="text-sm bg-gray-100 px-1.5 py-0.5 rounded">session_chunks</code>
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  Every transcript / file you uploaded, grouped by title. Used by Case A retrieval. Delete a source to remove all its chunks immediately.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={loadRagSources}
+                  disabled={ragLoading}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-200 disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${ragLoading ? 'animate-spin' : ''}`} />
+                  Refresh
+                </button>
+                <button
+                  onClick={wipeAllRag}
+                  disabled={ragSources.length === 0}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-xs font-medium hover:bg-red-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                  title="Type DELETE to confirm wiping all chunks"
+                >
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  Wipe all
+                </button>
+              </div>
+            </div>
+            <div className="text-xs text-gray-500">
+              {ragLoading ? (
+                <span className="inline-flex items-center gap-1.5"><Loader2 className="w-3 h-3 animate-spin" /> loading…</span>
+              ) : (
+                <>
+                  <span className="font-mono">{ragTotalChunks.toLocaleString()}</span> chunks across{' '}
+                  <span className="font-mono">{ragSources.length}</span> sources
+                </>
+              )}
+            </div>
+            {ragError && <p className="text-sm text-red-600">{ragError}</p>}
+          </div>
+
+          {ragSources.length === 0 && !ragLoading && (
+            <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center text-gray-400">
+              <Layers className="w-12 h-12 mx-auto mb-3 opacity-40" />
+              <p>RAG index is empty. Upload a transcript or file in the Transcripts tab.</p>
+            </div>
+          )}
+
+          {ragSources.map((src) => {
+            const isOpen = ragExpandedTitle === src.title;
+            return (
+              <div key={src.title} className="bg-white rounded-2xl shadow-sm border border-gray-100">
+                <div className="p-4 flex items-center justify-between gap-3">
+                  <button
+                    onClick={() => toggleRagSource(src.title)}
+                    className="flex-1 min-w-0 flex items-center gap-3 text-left hover:bg-gray-50 -m-2 p-2 rounded-lg transition-colors"
+                  >
+                    {isOpen ? (
+                      <ChevronDown className="w-4 h-4 text-gray-400 shrink-0" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
+                    )}
+                    <FileText className="w-4 h-4 text-indigo-500 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-900 truncate">{src.title}</p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {src.filename || '—'} · source: {src.source} · mentor: {src.mentor_id}
+                      </p>
+                    </div>
+                  </button>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full font-medium">
+                      {src.chunk_count} chunks
+                    </span>
+                    <button
+                      onClick={() => deleteRagSource(src.title)}
+                      className="flex items-center gap-1 text-xs px-2 py-1 rounded-md text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                      title="Delete all chunks for this source"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      delete
+                    </button>
+                  </div>
+                </div>
+                {isOpen && (
+                  <div className="border-t border-gray-100 px-4 py-3 space-y-2 bg-gray-50/50">
+                    {ragChunksLoading && (
+                      <p className="text-xs text-gray-500 inline-flex items-center gap-1.5">
+                        <Loader2 className="w-3 h-3 animate-spin" /> loading chunks…
+                      </p>
+                    )}
+                    {!ragChunksLoading && ragChunks.length === 0 && (
+                      <p className="text-xs text-gray-400">No chunks (was this just deleted?).</p>
+                    )}
+                    {ragChunks.map((c) => (
+                      <div key={c.id} className="bg-white border border-gray-200 rounded-lg p-3">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[11px] text-gray-400 font-mono mb-1">
+                              chunk #{c.chunk_index} · id {c.id}
+                            </p>
+                            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                              {c.text}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => deleteRagChunk(c.id)}
+                            className="shrink-0 flex items-center gap-1 text-[11px] px-2 py-1 rounded-md text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                            title="Delete this chunk"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 

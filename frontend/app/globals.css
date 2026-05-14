@@ -29,7 +29,7 @@ body {
   min-height: 100vh;
 }
 
-/* ── Aurora theme (new — Primentoring dark + magenta→indigo gradient) ─────── */
+/* ── Aurora theme (dark + magenta→indigo gradient) ──────────────────────── */
 .theme-aurora-root {
   --aurora-bg: #0a0a0a;
   --aurora-bg2: #141422;

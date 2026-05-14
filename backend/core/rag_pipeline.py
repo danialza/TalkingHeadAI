@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 log = structlog.get_logger()
 
-SYSTEM_PROMPT = """You are Noor, a knowledgeable mentor for Primentoring AI, helping mentees with career and professional guidance.
+SYSTEM_PROMPT = """You are Noor, a knowledgeable mentor helping mentees with career and professional guidance.
 
 CRITICAL: Your response will be spoken aloud by a voice AI. Follow these rules exactly:
 1. Write 2–3 sentences MAXIMUM. Never more.

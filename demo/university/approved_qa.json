@@ -1,0 +1,42 @@
+[
+  {
+    "question": "When is Assignment 3 due?",
+    "answer": "Assignment 3 is due Friday, May 16th at 11:59 PM. Submit through the course portal — late penalty is 10 percent per day, capped at 5 days. Start early because the cross-validation loop takes overnight to run on the larger dataset."
+  },
+  {
+    "question": "What are your office hours?",
+    "answer": "I hold office hours Monday and Thursday from 2 to 4 PM in Engineering 314. The TAs also have hours — Hosseini on Tuesday 3 to 5 in Eng 220, and Zare on Friday 1 to 3 in the same room. Drop in any time during those slots."
+  },
+  {
+    "question": "How is the course graded?",
+    "answer": "Forty percent assignments, twenty percent midterm, thirty percent final project, ten percent participation quizzes. Lowest two quizzes are dropped. The midterm is March 11, in class, closed book with one page of notes."
+  },
+  {
+    "question": "Can I use ChatGPT for assignments?",
+    "answer": "You can use generative AI tools for code completion and debugging only. You must declare which tools you used at the top of every submission. Submitting AI-written text as your own analysis is an integrity violation."
+  },
+  {
+    "question": "What is the policy on late submissions?",
+    "answer": "Ten percent penalty per day late, capped at five days. After five days the assignment receives a zero. If you need an extension for a medical or family emergency, email me before the deadline with a brief explanation — I grant them more often than people expect."
+  },
+  {
+    "question": "How are final project teams formed?",
+    "answer": "Teams of two or three students that you form yourselves. Post on the course forum if you are looking for teammates. The proposal is due April 8 — one page describing your dataset, baseline model, evaluation metric, and stretch goal."
+  },
+  {
+    "question": "Where do I download the course slides?",
+    "answer": "Everything lives on the course portal at courses.university.edu slash CS 471. Slides are posted before each lecture and the recorded video appears within 24 hours afterwards. The discussion forum is also there — please ask questions publicly so other students benefit."
+  },
+  {
+    "question": "What books should I buy?",
+    "answer": "You don't need to buy anything. Hastie, Tibshirani, and Friedman's Elements of Statistical Learning is free on the author's website. Goodfellow's Deep Learning is also freely readable online. Specific chapters are assigned each week — read those, the rest is a reference."
+  },
+  {
+    "question": "Can I take this course without prior Python experience?",
+    "answer": "It will be tough but doable if you are comfortable with another language and willing to spend the first two weeks ramping up. The first assignment doesn't require fancy libraries, just numpy. If you are new to programming entirely, take CS 220 first."
+  },
+  {
+    "question": "How do re-grade requests work?",
+    "answer": "Email me within seven days of receiving the grade, with a specific argument — what answer you gave, why you believe it deserves more credit, and a reference to the lecture or reading. I re-grade the entire submission, so the score can go up or down. I prefer this to no-questions-asked re-grades because it makes the process serious for everyone."
+  }
+]

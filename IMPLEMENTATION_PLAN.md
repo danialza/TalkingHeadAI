@@ -1,7 +1,7 @@
 # TalkingHeadAI — Implementation Plan (Phase 1)
 
 ## Executive Summary
-A real-time conversational talking-head agent for Primentoring AI that communicates
+A real-time conversational talking-head mentor agent that communicates
 using voice, renders a talking-head avatar, and provides mentor-backed responses
 through a two-mode knowledge base system.
 

@@ -91,6 +91,69 @@ class VectorStoreService:
         )
         return True
 
+    async def delete_by_filter(self, collection: str, filter_payload: dict) -> int:
+        """Delete every point whose payload matches every key/value in
+        ``filter_payload``. Returns count of points removed."""
+        from qdrant_client.models import FilterSelector
+        conditions = [
+            FieldCondition(key=k, match=MatchValue(value=v))
+            for k, v in filter_payload.items()
+        ]
+        flt = Filter(must=conditions)
+        before = (await self.client.count(
+            collection_name=collection, count_filter=flt, exact=True,
+        )).count
+        await self.client.delete(
+            collection_name=collection,
+            points_selector=FilterSelector(filter=flt),
+        )
+        return before
+
+    async def delete_all(self, collection: str) -> int:
+        """Wipe every point in a collection. Collection schema remains."""
+        from qdrant_client.models import FilterSelector
+        before = (await self.client.count(collection_name=collection, exact=True)).count
+        if before == 0:
+            return 0
+        await self.client.delete(
+            collection_name=collection,
+            points_selector=FilterSelector(filter=Filter(must=[])),
+        )
+        return before
+
+    async def scroll_all(
+        self,
+        collection: str,
+        filter_payload: Optional[dict] = None,
+        limit: int = 1000,
+    ) -> list[dict]:
+        """Return up to ``limit`` points (id + payload, NO vectors)."""
+        query_filter = None
+        if filter_payload:
+            conditions = [
+                FieldCondition(key=k, match=MatchValue(value=v))
+                for k, v in filter_payload.items()
+            ]
+            query_filter = Filter(must=conditions)
+        out: list[dict] = []
+        offset = None
+        remaining = limit
+        while remaining > 0:
+            page, offset = await self.client.scroll(
+                collection_name=collection,
+                scroll_filter=query_filter,
+                with_payload=True,
+                with_vectors=False,
+                limit=min(256, remaining),
+                offset=offset,
+            )
+            for p in page:
+                out.append({"id": p.id, "payload": p.payload or {}})
+            remaining -= len(page)
+            if offset is None or not page:
+                break
+        return out
+
     async def count(self, collection: str) -> int:
         result = await self.client.count(collection_name=collection, exact=True)
         return result.count

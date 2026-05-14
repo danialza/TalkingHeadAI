@@ -51,7 +51,7 @@ async def seed():
             qa = QAPair(
                 question=item["question"],
                 answer=item["answer"],
-                mentor_id=item.get("mentor_id", "jack"),
+                mentor_id=item.get("mentor_id", "noor"),
                 source="podcast",
                 approved=True,
             )

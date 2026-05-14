@@ -3,6 +3,21 @@
 Real-time conversational talking-head mentor agent.  
 Users ask questions by voice or text, and the system responds with a lip-synced avatar using mentor-approved answers.
 
+![Python](https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js%2014-000000?logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL%2016-4169E1?logo=postgresql&logoColor=white)
+![Qdrant](https://img.shields.io/badge/Qdrant-DC382D?logo=qdrant&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
+![Claude](https://img.shields.io/badge/Claude%20Sonnet%204.5-D97757?logo=anthropic&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI%20Embeddings-412991?logo=openai&logoColor=white)
+![Deepgram](https://img.shields.io/badge/Deepgram%20STT-13EF93?logo=deepgram&logoColor=black)
+![ElevenLabs](https://img.shields.io/badge/ElevenLabs%20TTS-000000?logo=elevenlabs&logoColor=white)
+![D-ID](https://img.shields.io/badge/D--ID%20Avatar-FF4F64?logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+
 ## What It Does
 
 - **Voice conversation** with a real-time talking-head avatar (Noor)

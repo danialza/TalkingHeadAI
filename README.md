@@ -325,5 +325,5 @@ Inspection URLs:
 - Redis keys: `docker exec -it talkinghead-redis-1 redis-cli KEYS '*'`
 
 ## License
-
-Private project.
+Copyright © 2026 Danial Zafaranchizadeh Moghaddam. All rights reserved.
+Private project. No reuse, modification, distribution, or commercial use without prior written permission.
